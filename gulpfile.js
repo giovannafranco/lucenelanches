@@ -61,12 +61,12 @@ gulp.task('styles', function() {
 });
 
 gulp.task('webserver', function() {
-  gulp.src('./src/')
+  gulp.src('./build/')
     .pipe(webserver({
       port: 3000,
       livereload: true,
       open: true,
-      fallback: './src/index.html'
+      fallback: './build/index.html'
     }));
 });
 

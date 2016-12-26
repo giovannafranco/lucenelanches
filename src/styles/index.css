@@ -1,0 +1,63 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0; padding: 0;
+  background-color: #ecf0f1;
+}
+
+.container {
+  display:flex;
+  flex-direction: row;
+}
+
+.container > div {
+  width: 50%;
+  height: 100px;
+  margin: 20px;
+}
+
+.element-title{
+  margin-right: 30px;
+}
+
+.fields {
+  width: 100%;
+  margin: 5px 0;
+  padding: 8px 10px;
+  display: inline-block;
+  box-sizing: border-box;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+}
+
+.combobox-ingredients{
+  width: 100%;
+  margin: 5px 0;
+  padding: 8px 10px;
+  display: inline-block;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+}
+
+.type-of-ingredients, .user_informations{
+  margin: 10px 0;
+  padding: 8px 0;
+}
+
+.ingredients{
+  display: inline-block;
+}
+
+button {
+  width: 100%;
+	margin: 8px 0;
+  padding: 10px 0;
+  border: 2px solid;
+  border-radius: 8px;
+  background-color: #4CAF50;
+  color: white;
+  cursor: pointer;
+}
