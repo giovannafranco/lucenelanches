@@ -1,63 +1,86 @@
-var gulp        = require('gulp');
-var jshint      = require('gulp-jshint');
-var changed     = require('gulp-changed');
-var imagemin    = require('gulp-imagemin');
-var minifyHTML  = require('gulp-minify-html');
-var concat      = require('gulp-concat');
-var stripDebug  = require('gulp-strip-debug');
-var uglify      = require('gulp-uglify');
-var autoprefix  = require('gulp-autoprefixer');
-var minifyCSS   = require('gulp-minify-css');
-var webserver   = require('gulp-webserver');
+var gulp          = require('gulp'),
+    babel         = require('gulp-babel'),
+    uglify        = require('gulp-uglify'),
+    wrapCommonjs  = require('gulp-wrap-commonjs'),
+    concat        = require('gulp-concat'),
+    jshint        = require('gulp-jshint'),
+    changed       = require('gulp-changed'),
+    imagemin      = require('gulp-imagemin'),
+    minifyHTML    = require('gulp-minify-html'),
+    autoprefix    = require('gulp-autoprefixer'),
+    minifyCSS     = require('gulp-minify-css'),
+    webserver     = require('gulp-webserver');
+
+var _paths = {
+  jsSrcPath: [
+    './src/scripts/controllers.js',
+    './src/scripts/helpers.js',
+    './src/scripts/models.js',
+    './src/scripts/services.js',
+    './src/scripts/utils.js'
+  ],
+  jsDstPath   : './build/scripts/',
+  cssSrcPath  : './src/styles/*.css',
+  cssDstPath  : './build/styles/',
+  htmlSrcPath : './src/*.html',
+  htmlDstPath : './build',
+  imgSrcPath  : './src/images/**/*',
+  imgDstPath  : './build/images'
+};
+
+var _jsOutFile = 'script.js';
+var _cssOutFile = 'styles.css';
 
 gulp.task('jshint', function() {
-  gulp.src('./src/scripts/*.js')
-    .pipe(jshint())
+  gulp.src(_paths.jsSrcPath)
+    .pipe(jshint({ esnext: true }))
     .pipe(jshint.reporter('default'))
 });
 
 gulp.task('imagemin', function() {
-  var imgSrc = './src/images/**/*',
-      imgDst = './build/images';
-
-  gulp.src(imgSrc)
-    .pipe(changed(imgDst))
+  gulp.src(_paths.imgSrcPath)
+    .pipe(changed(_paths.imgDstPath))
     .pipe(imagemin())
-    .pipe(gulp.dest(imgDst))
+    .pipe(gulp.dest(_paths.imgDstPath))
 });
 
 gulp.task('htmlpage', function() {
-  var htmlSrc = './src/*.html',
-      htmlDst = './build';
-
-  gulp.src(htmlSrc)
-    .pipe(changed(htmlDst))
+  gulp.src(_paths.htmlSrcPath)
+    .pipe(changed(_paths.htmlDstPath))
     .pipe(minifyHTML())
-    .pipe(gulp.dest(htmlDst));
+    .pipe(gulp.dest(_paths.htmlDstPath));
 });
 
-gulp.task('scripts', function() {
-  var jsOutFile = 'script.js',
-      jsSrc = './src/scripts/*.js',
-      jsDst = './build/scripts/';
-
-  gulp.src([jsSrc])
-    .pipe(concat(jsOutFile))
-    .pipe(stripDebug())
+gulp.task('commonjs', function() {
+  gulp.src(['./src/scripts/commonjs-required.js'])
     .pipe(uglify())
-    .pipe(gulp.dest(jsDst));
+    .pipe(concat('commonjs-required.js'))
+    .pipe(gulp.dest(_paths.jsDstPath))
+})
+
+gulp.task('scripts', function() {
+  gulp.src(_paths.jsSrcPath)
+    .pipe(babel({presets: ['es2015']}))
+    .pipe(
+      wrapCommonjs({
+        pathModifier: function (path) {
+          path = path.replace(/.js$/, '')
+          return path;
+        },
+        relativePath: './src/scripts/'
+      })
+    )
+    //.pipe(uglify())
+    .pipe(concat(_jsOutFile))
+    .pipe(gulp.dest(_paths.jsDstPath));
 });
 
 gulp.task('styles', function() {
-  var cssOutFile = 'styles.css',
-      cssSrc = './src/styles/*.css',
-      cssDst = './build/styles/';
-  
-  gulp.src([cssSrc])
-    .pipe(concat(cssOutFile))
+  gulp.src([_paths.cssSrcPath])
+    .pipe(concat(_cssOutFile))
     .pipe(autoprefix('last 2 versions'))
     .pipe(minifyCSS())
-    .pipe(gulp.dest(cssDst));
+    .pipe(gulp.dest(_paths.cssDstPath));
 });
 
 gulp.task('webserver', function() {
@@ -70,15 +93,10 @@ gulp.task('webserver', function() {
     }));
 });
 
-gulp.task('default', ['imagemin', 'htmlpage', 'scripts', 'styles', 'webserver'], function() {
-  var htmlSrc = './src/*.html',
-      jsSrc = './src/scripts/*.js',
-      cssSrc = './src/styles/*.css',
-      imgSrc = './src/images/**/*';  
-
-  gulp.watch(htmlSrc, ['htmlpage']);
-  gulp.watch(jsSrc, ['jshint', 'scripts']);
-  gulp.watch(cssSrc, ['styles']);
-  gulp.watch(imgSrc, ['imagemin']);
+gulp.task('default', ['imagemin', 'htmlpage', 'styles', 'scripts', 'commonjs', 'webserver'], function() {
+  gulp.watch(_paths.htmlSrcPath, ['htmlpage']);
+  gulp.watch(_paths.jsSrcPath, ['jshint', 'scripts']);
+  gulp.watch(_paths.cssSrcPath, ['styles']);
+  gulp.watch(_paths.imgSrcPath, ['imagemin']);
 });
 
