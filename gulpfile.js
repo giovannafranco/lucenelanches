@@ -70,7 +70,7 @@ gulp.task('scripts', function() {
         relativePath: './src/scripts/'
       })
     )
-    //.pipe(uglify())
+    .pipe(uglify())
     .pipe(concat(_jsOutFile))
     .pipe(gulp.dest(_paths.jsDstPath));
 });

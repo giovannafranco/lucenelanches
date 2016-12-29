@@ -1,24 +1,25 @@
 * {
   box-sizing: border-box;
+  font-family: 'PT Sans Narrow', sans-serif;
+  font-style: 18px;
+  font-weight: bold;
 }
 
 body {
   margin: 0 auto; 
   padding: 0;
-  font-family: Arial;
 }
 
 .container {
-  display:flex;
-  flex-direction: row;
-  margin: 0; padding: 0;
+  display: flex; 
+  flex-flow: row wrap;
+
   background-color: #fff;
 }
 
 .sections {
-  width: 50%;
-  height: 100px;
   margin: 20px;
+  width: 47%;
 }
 
 .element-title{
@@ -75,4 +76,40 @@ body {
   text-align: center;
   font-style: italic;
   color: #FFFF00;
+  font-family: 'Lobster', cursive;
+}
+
+@media all and (min-width: 600px) {
+    .section { 
+      flex: 1 auto;
+      flex-direction: column;
+     }
+}
+
+@media all and (min-width: 800px) {
+    .section1,.section2 {
+      flex-direction: row;
+    }
+}
+
+.snack-table{
+  border-collapse: collapse;
+  width: 100%;
+  clear: right;
+  box-sizing: border-box;
+  border: 1px solid #000000;
+}
+
+.snack-table td{
+  border: 1px solid #000000;
+}
+.table-head {
+    text-align: left;
+    padding: 8px;
+    background: #D50000;
+    border: 1px solid #00000
+}
+
+.logo{
+  float: right;
 }

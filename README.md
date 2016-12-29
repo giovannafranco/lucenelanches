@@ -22,5 +22,5 @@ Webserver started at http://localhost:3000
 ```
 
 ### Screenshots
-![Home](https://lh5.googleusercontent.com/EPTiRFa__p6ZC3l2S14V0fc9bvJaFUPUvwPMxOnRvY9SsDP_-zXJu8ZO4fNdNSvqIuW34nycpA-opuI=w1366-h645-rw "Tela home")
-![Checkout](https://github.com/adam-p/markdown-here/raw/master/src/common/images/icon48.png "Tela de fechamento de pedido")
+![Home](https://lh3.googleusercontent.com/qeanhE-BpsurYIemrQ9DjOzJkAmTbGxjFAuPZcWaTPCr7OyGatok1ivsFn7aTqnJenuwZZ5GH6WeDKE=w1366-h645-rw "Tela home")
+![Checkout](https://lh3.googleusercontent.com/JD9YqV7bh-EHn5st6of1j6fXSEC19EvEcgSqHQ6ZJY34R3vt5_p9jhXxF7X6rHyaP7DNQtMw5X2ijRU=w1366-h645-rw "Tela de fechamento de pedido")

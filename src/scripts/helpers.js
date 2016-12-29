@@ -17,7 +17,8 @@ export class SnackFormHelper {
 				'salad-options': d.getElementById('salad-options'),
 				'sauce-options': d.getElementById('sauce-options'),
 				'seasoning-options': d.getElementById('seasoning-options'),
-				'snack-value': d.getElementById('snack-value')
+				'snack-value': d.getElementById('snack-value'),
+				'total-order': d.getElementById('total-order')
 			},
 			buttons: {
 				'add-snack': d.getElementById('add-snack')
@@ -41,6 +42,7 @@ export class SnackFormHelper {
 		// init click listeners
 		this.addClickListenerAddSnack();
 		this.addChangeListenerSnack();
+		this._updateTotal();
 		
 		// init components
 		this._createSnackList();
@@ -209,6 +211,8 @@ export class SnackFormHelper {
 		localStorage.setItem('clientName', this.fields.form.name.value);
 		
 		this._resetForm();
+
+		this._updateTotal();
 	}
 
 	_addTableRow(table, snackSelected, breadName) {
@@ -338,6 +342,14 @@ export class SnackFormHelper {
 		[...this.d.getElementsByName('seasoning')].forEach((itemCheckbox) => {
 			itemCheckbox.checked = false;
 		});
+	}
+
+	_updateTotal() {
+		let total = this.order.reduce((i, j) => {
+			return i + j.value();
+		}, 0);
+
+		this.fields.form['total-order'].value = total;
 	}
 }
 

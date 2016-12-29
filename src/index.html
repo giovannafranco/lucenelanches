@@ -3,12 +3,13 @@
 <head>
 	<meta charset="UTF-8">
 	<title>Lucene Lanches</title>
+	<link href="https://fonts.googleapis.com/css?family=Lobster|PT+Sans+Narrow" rel="stylesheet">
 	<link rel="stylesheet" type="text/css" href="styles/styles.css">
 </head>
 <body>
 	<h1 class="banner">Lucene Lanches</h1>
 	<section class="container">
-		<div class="sections">
+		<div class="sections section1">
 			<form>
 				<div class="user_informations">
 					<label class="element-title" for="name">* Name</label>
@@ -38,38 +39,37 @@
 				</div>
 
 				<div class="type-of-ingredients" id="salad-options">
-					<label class="element-title" for="salad">Salad</label>
+					<label class="element-title" for="salad">Salad</label><br>
 				</div>
 
 				<div class="type-of-ingredients" id="sauce-options">
-					<label class="element-title" for="sauce">Sauce</label>
+					<label class="element-title" for="sauce">Sauce</label><br>
 				</div>
 				
 				<div class="type-of-ingredients" id="seasoning-options">
-					<label class="element-title" for="seasoning">Seasoning</label>
+					<label class="element-title" for="seasoning">Seasoning</label><br>
 				</div>
 				
-				<input id="snack-value" class="fields" type="text" readonly>
-
 				<button class="actions-button" type="button" id="finish-order">Finish</button>
 				<button class="actions-button" type="button" id="add-snack">Save</button>
 
 			</form>
 		</div>
-		<div class="sections">
-			<table class="snack-table" id="snack-table" border="1">
+		<div class="sections section2">
+			<img class="logo" src="/images/logo.png">
+			<table class="snack-table" id="snack-table" >
 				<thead>
 					<tr>
-						<th>Snack</th>
-						<th>Amount</th>
-						<th>Value</th>
-						<th>Total</th>
+						<th class="table-head">Snack</th>
+						<th class="table-head">Amount</th>
+						<th class="table-head">Value</th>
+						<th class="table-head">Total</th>
 					</tr>
 				</thead>
 				<tbody>
 				</tbody>
 			</table>
-		</div>
+			<input id="total-order" class="fields" type="text" readonly>
 	</section>
 
 	<script src="scripts/commonjs-required.js" type="text/javascript"></script>
