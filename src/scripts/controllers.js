@@ -31,12 +31,25 @@ export class SnackController {
 	}
 
 	finishOrder() {
+		if (this.order.length < 1) {
+			alert('At least one snack must be selected for the order.');
+			return;
+		}
+
 		let total = 0;
 
 		for (let key in this.order) {
 			total += this.order[key].value();
 		}
 
-		console.log(`Total value: ${total}`);
+		localStorage.setItem('orderValue', total);
+
+		window.location.href = '/orderDetail.html'
+	}
+}
+
+export class OrderController{
+	constructor(d){
+		let formHelper = new helpers.OrderFormHelper(d);
 	}
 }

@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Lucene Lanches</title>
+	<link rel="stylesheet" type="text/css" href="styles/styles.css">
+</head>
+<body>
+	<h1 class="banner">Lucene Lanches</h1>
+	<section class="container">
+		<div class="sections">
+			<p class="informative-text">Hello <span id="name"></span></p>	
+			
+			<p class="informative-text">The value of your order is <span id="value"></span></p>
+			
+			<div>
+				<p class="informative-text">What is the payment method?</p>
+				<div class="radio-btn-payment-method">
+					<input type="radio" name="payment-method" value="credit"/>Credit
+					<input type="radio" name="payment-method" value="debit"/>Debit
+					<input type="radio" name="payment-method" value="money"/>Money
+				</div>
+			</div>
+
+			<div class="sections">
+				<label class="informative-text" for="change">Need change?</label>
+				<input type="radio" name="change" value="yes"/>Yes
+				<input type="radio" name="change" value="no"/>No
+			</div>
+		</div>
+
+		<div>
+			<p class="informative-text">Your order is already in progress.</p>	
+
+			<p class="informative-text">Use our calculator if you want to split the</p>
+
+			<label class="informative-text" for="value-order">Value of the order</label>
+			<input class="order-fields" id="value-order" disabled="true" />
+			<br>
+			<label class="informative-text" for="amount-people">Amount of people</label>
+			<input class="order-fields" id="amount-people"/>
+			<br>
+			<label class="informative-text" for="value-person">Value per person</label>
+			<input class="order-fields" id="value-person" disabled="true"/>
+			<br>
+			<label class="informative-text" for="percent-person">Percent per person</label>
+			<input class="order-fields" id="percent-person" disabled="true"/>
+		</div>
+		
+	</section>
+	
+	<script src="scripts/commonjs-required.js" type="text/javascript"></script>
+	<script src="scripts/script.js" type="text/javascript"></script>
+
+	<script type="text/javascript">
+		var OrderController = require('../controllers').OrderController;
+		var orderCtrl = new OrderController(document);
+	</script>
+
+</body>
+</html>

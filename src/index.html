@@ -6,15 +6,19 @@
 	<link rel="stylesheet" type="text/css" href="styles/styles.css">
 </head>
 <body>
+	<h1 class="banner">Lucene Lanches</h1>
 	<section class="container">
-		<div>
+		<div class="sections">
 			<form>
 				<div class="user_informations">
-					*<input class="fields" id="name" placeholder="Name"/>
-					*<input class="fields" id="adress" placeholder="Adress"/>
+					<label class="element-title" for="name">* Name</label>
+					<input class="fields" id="name" placeholder="Name"/>
+					<label class="element-title" for="name">* Address</label>
+					<input class="fields" id="address" placeholder="Adress"/>
 				</div>
 
 				<div class="type-of-ingredients">
+					<label class="element-title" for="snack-list">Snack list</label>
 					<select class="combobox-ingredients" id="snack-list"></select>
 				</div>
 
@@ -34,7 +38,7 @@
 				</div>
 
 				<div class="type-of-ingredients" id="salad-options">
-					<label class="element-title" for="salad">* Salad</label>
+					<label class="element-title" for="salad">Salad</label>
 				</div>
 
 				<div class="type-of-ingredients" id="sauce-options">
@@ -45,17 +49,15 @@
 					<label class="element-title" for="seasoning">Seasoning</label>
 				</div>
 				
-				<button>Value of snack</button>
-				<button type="button" id="add-snack">Save</button>
-				<button type="button" id="finish-order">Finish</button>
+				<input id="snack-value" class="fields" type="text" readonly>
+
+				<button class="actions-button" type="button" id="finish-order">Finish</button>
+				<button class="actions-button" type="button" id="add-snack">Save</button>
 
 			</form>
 		</div>
-		<div>
-			<!-- <textarea rows="30" cols="80">First snack 1
-			Second snack</textarea>
-			<button id="btn">Value of the order</button> -->
-			<table id="snack-table" border="1">
+		<div class="sections">
+			<table class="snack-table" id="snack-table" border="1">
 				<thead>
 					<tr>
 						<th>Snack</th>

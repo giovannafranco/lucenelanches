@@ -1,0 +1,13 @@
+.informative-text,.radio-btn-payment-method{
+	margin: 40px 20px;
+}
+
+.order-fields{
+	width: 50%;
+    margin: 5px 0;
+    padding: 8px 10px;
+    display: inline-block;
+    box-sizing: border-box;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+}

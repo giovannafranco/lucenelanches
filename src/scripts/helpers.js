@@ -1,21 +1,23 @@
+const models = require('../models');
+
 /**
  * The class is a facilitator to manipulate the elements of the Snack form.
  */
-
 export class SnackFormHelper {
 	constructor(d, snacks, typesOfBread, cheeses, fillings, salads, sauces, seasonings, order) {
 		
 		this.fields = {
 			form: {
-				'name': d.getElementById('username'),
-				'address': d.getElementById('user-address'),
+				'name': d.getElementById('name'),
+				'address': d.getElementById('address'),
 				'snack-list': d.getElementById('snack-list'),
 				'bread-list': d.getElementById('bread-list'),
 				'cheese-list': d.getElementById('cheese-list'),
 				'filling-list': d.getElementById('filling-list'),
 				'salad-options': d.getElementById('salad-options'),
 				'sauce-options': d.getElementById('sauce-options'),
-				'seasoning-options': d.getElementById('seasoning-options')
+				'seasoning-options': d.getElementById('seasoning-options'),
+				'snack-value': d.getElementById('snack-value')
 			},
 			buttons: {
 				'add-snack': d.getElementById('add-snack')
@@ -73,69 +75,47 @@ export class SnackFormHelper {
 	}
 
 	_createSnackList() {
-		let opt = this.d.createElement('option');
-		opt.value = '';
-		opt.innerHTML = '-----';
-		this.fields.form['snack-list'].appendChild(opt);
-
-		for (let key in this.snacks) {
-			let opt = this.d.createElement('option');
-			opt.value = this.snacks[key].name;
-			opt.innerHTML = opt.value;
-
-			this.fields.form['snack-list'].appendChild(opt);
-		}
+		this._createOptionsSelect(this.fields.form['snack-list'], this.snacks);
 	}
 
 	_createTypesOfBreadList() {
-		let opt = this.d.createElement('option');
-		opt.value = '';
-		opt.innerHTML = '-----';
-		this.fields.form['bread-list'].appendChild(opt);
-
-		for (let key in this.typesOfBread) {
-			let opt = this.d.createElement('option');
-			opt.value = this.typesOfBread[key].name;
-			opt.innerHTML = opt.value;
-
-			this.fields.form['bread-list'].appendChild(opt);
-		}
+		this._createOptionsSelect(this.fields.form['bread-list'], this.typesOfBread);
 	}
 
 	_createCheeseList() {
-		let opt = this.d.createElement('option');
-		opt.value = '';
-		opt.innerHTML = '-----';
-		this.fields.form['cheese-list'].appendChild(opt);
-
-		for (let key in this.cheeses) {
-			let opt = this.d.createElement('option');
-			opt.value = this.cheeses[key].name;
-			opt.innerHTML = opt.value;
-
-			this.fields.form['cheese-list'].appendChild(opt);
-		}
+		this._createOptionsSelect(this.fields.form['cheese-list'], this.cheeses);
 	}
 
 	_createFillingList() {
+		this._createOptionsSelect(this.fields.form['filling-list'], this.fillings);
+	}
+
+	/*
+	 * Creates the options of the select component.
+	 * 
+	 * @target
+	 * 			Reference to select component where the options will be created
+	 * @items
+	 *			List of items
+	 */
+	_createOptionsSelect(target, items) {
 		let opt = this.d.createElement('option');
 		opt.value = '';
 		opt.innerHTML = '-----';
-		this.fields.form['filling-list'].appendChild(opt);
+		target.appendChild(opt);
 
-		for (let key in this.fillings) {
+		for (let key in items) {
 			let opt = this.d.createElement('option');
-			opt.value = this.fillings[key].name;
+			opt.value = items[key].name;
 			opt.innerHTML = opt.value;
-
-			this.fields.form['filling-list'].appendChild(opt);
+			target.appendChild(opt);
 		}
 	}
 
 	_createSaladOptions() {
 		for (let key in this.salads) {
 			let saladName = this.salads[key].name;
-			this._createInput('radio', 'salad', saladName, saladName, this.fields.form['salad-options']);
+			this._createInput('checkbox', 'salad', saladName, saladName, this.fields.form['salad-options']);
 		}
 	}
 
@@ -183,70 +163,74 @@ export class SnackFormHelper {
 	}
 
 	_addSnack() {
-		let breadList = this.fields.form['bread-list'];
-		let cheesesList = this.fields.form['cheese-list'];
-		let fillingList = this.fields.form['filling-list'];
+		
+		let strError = this._validate();
+		
+		if (strError !== '') {
+			alert(strError);
+			return;
+		}
+
 		let table = this.fields['snack-table'];
 
-
 		let snackSelected = this._getSelectedSnack();
+		let breadSelected = this._getSelectedBread();
+		let cheeseSelected = this._getSelectedCheese();
+		let fillingSelected = this._getSelectedFilling();
 		
-		// let typeOfBreadSelected = this.typesOfBread[breadList.selectedIndex];
-		// let cheeseSelected = this.cheeses[cheesesList.selectedIndex];
-		// let fillingSelected = this.fillings[fillingList.selectedIndex];
-
-		// FIXME: validar se o usuário selecionou lanche, queijo, etc
-		// snackSelected.ingredients.concat([typeOfBreadSelected, cheeseSelected, fillingSelected]);
+		let saladSelected = this._getAdditionalsSelected('salad', this.salads);
+		let sauceSelected = this._getAdditionalsSelected('sauce', this.sauces);
+		let seasoningSelected = this._getAdditionalsSelected('seasoning', this.seasonings);
 
 		if (snackSelected === undefined) {
-			alert('Selecione um lanche!');
+
+			let snack = new models.Snack('', [breadSelected,
+																				cheeseSelected,
+																				fillingSelected]
+																				.concat(saladSelected)
+																				.concat(sauceSelected)
+																				.concat(seasoningSelected)
+																				);
+
+			this._addTableRow(table, snack, breadSelected.name);
+		
 		} else {
-			this._addTableRow(table, snackSelected);
+			snackSelected.ingredients = [breadSelected,
+																	 cheeseSelected,
+																	 fillingSelected]
+																	 .concat(saladSelected)
+																	 .concat(sauceSelected)
+																	 .concat(seasoningSelected);
+
+			this._addTableRow(table, snackSelected, breadSelected.name);
 			this.order.push(snackSelected);
 		}
+
+		localStorage.setItem('clientName', this.fields.form.name.value);
+		
+		this._resetForm();
 	}
 
-	_addTableRow(table, snackSelected) {
-		const CELL_NAME = 0;
-		const CELL_AMOUNT = 1;
-		const CELL_VALUE = 2;
-		const CELL_TOTAL = 3;
+	_addTableRow(table, snackSelected, breadName) {
+		const CELL_NAME = 0,
+					CELL_AMOUNT = 1,
+					CELL_VALUE = 2,
+					CELL_TOTAL = 3;
 
 		let isNew = true;
 
-		let hasSnack = this._hasSnack(this.tableDataSet, snackSelected);
+		let row = table.insertRow(-1);
+		let cellName = row.insertCell(CELL_NAME);
+		let cellAmount = row.insertCell(CELL_AMOUNT);
+		let cellValue = row.insertCell(CELL_VALUE);
+		let cellTotal = row.insertCell(CELL_TOTAL);
 
-		if (!hasSnack) {
-			let row = table.insertRow(-1);
-			let cellName = row.insertCell(CELL_NAME);
-			let cellAmount = row.insertCell(CELL_AMOUNT);
-			let cellValue = row.insertCell(CELL_VALUE);
-			let cellTotal = row.insertCell(CELL_TOTAL);
+		cellName.innerHTML = `${(this.tableDataSet.length+1)} - ${breadName}`;
+		cellAmount.innerHTML = 1;
+		cellValue.innerHTML = snackSelected.value();
+		cellTotal.innerHTML = snackSelected.value();
 
-			cellName.innerHTML = `${(this.tableDataSet.length+1)} - ${snackSelected.name}`;
-			cellAmount.innerHTML = 1;
-			cellValue.innerHTML = snackSelected.value();
-			cellTotal.innerHTML = snackSelected.value();
-
-			this.tableDataSet.push(snackSelected);
-		} else {
-			let snackIndex = this.tableDataSet.indexOf(snackSelected) + 1;
-			let rows = this.fields['snack-table'].rows;
-			
-			let amount = parseInt(rows[snackIndex].cells[CELL_AMOUNT].innerHTML);
-			let value = parseFloat(rows[snackIndex].cells[CELL_VALUE].innerHTML);
-
-			rows[snackIndex].cells[CELL_AMOUNT].innerHTML = (amount + 1);
-			rows[snackIndex].cells[CELL_TOTAL].innerHTML = value * (amount + 1);
-		}
-	}
-
-	_hasSnack(list, snack) {
-		return list.filter((s) => {
-			return (s.name === snack.name &&
-						  s.value === snack.value &&
-						  s.ingredients.length === snack.ingredients.length);
-		}).length > 0;
+		this.tableDataSet.push(snackSelected);
 	}
 
 	_getSelectedSnack() {
@@ -254,34 +238,53 @@ export class SnackFormHelper {
 		return this.snacks[snackList.selectedIndex - 1];
 	}
 
+	_getSelectedBread() {
+		let breadList = this.fields.form['bread-list'];
+		return this.typesOfBread[breadList.selectedIndex - 1];
+	}
+
+	_getSelectedCheese() {
+		let cheeseList = this.fields.form['cheese-list'];
+		return this.cheeses[cheeseList.selectedIndex - 1];
+	}
+
+	_getSelectedFilling() {
+		let fillingList = this.fields.form['filling-list'];
+		return this.fillings[fillingList.selectedIndex - 1];
+	}
+
+	_getAdditionalsSelected(name, list) {
+		let items = document.querySelectorAll(`input[name="${name}"]:checked`);
+		let itemsSelected = [];
+
+		for (let i in items) {
+			for (let j in list) {
+				if (items[i].value === list[j].name) {
+					itemsSelected.push(list[j]);
+				}
+			}
+		}
+
+		return itemsSelected;
+	}
+
 	_selectIngredientsOfSnack() {
 		let snack = this._getSelectedSnack();
 
 		if (snack !== undefined) {
-			let bread = snack.ingredients.filter((i) => { return i.categoria === 'Tipo de pão'; })[0];		
-			let cheese = snack.ingredients.filter((i) => { return i.categoria === 'Queijo'; })[0];
-			let filling = snack.ingredients.filter((i) => { return i.categoria === 'Recheio'; })[0];
-			let salad = snack.ingredients.filter((i) => { return i.categoria === 'Saladas'; })[0];
+			let bread = snack.ingredients.filter((i) => { return i.category === 'Tipo de pão'; })[0];		
+			let cheese = snack.ingredients.filter((i) => { return i.category === 'Queijo'; })[0];
+			let filling = snack.ingredients.filter((i) => { return i.category === 'Recheio'; })[0];
+			let salads = snack.ingredients.filter((i) => { return i.category === 'Saladas'; });
+			let sauces = snack.ingredients.filter((i) => { return i.category === 'Molhos'; });
+			let seasonings = snack.ingredients.filter((i) => { return i.category === 'Temperos'; });
 
-
-
-			this.fields.form['bread-list'].value = bread.nome;
-			this.fields.form['cheese-list'].value = cheese.nome;
-			this.fields.form['filling-list'].value = filling.nome;
-
-
-			let saladArr = this.d.getElementsByName('salad');
-			console.log(saladArr);
-
-			for (let key in saladArr) {
-				if (saladArr[key].value === salad.nome) {
-					saladArr[key].checked = true;
-					break;
-				}
-			}
-
-			// this.fields.form['salad-options'].value = salad.nome;
-
+			this.fields.form['bread-list'].value = bread.name;
+			this.fields.form['cheese-list'].value = cheese.name;
+			this.fields.form['filling-list'].value = filling.name;
+			this._setCheckboxItem('salad', salads);
+			this._setCheckboxItem('sauce', sauces);
+			this._setCheckboxItem('seasoning', seasonings);
 
 		} else {
 			this.fields.form['bread-list'].value = '';
@@ -289,4 +292,101 @@ export class SnackFormHelper {
 			this.fields.form['filling-list'].value = '';
 		}
 	}
+
+	_setCheckboxItem(checkboxName, dataSet) {
+		[...this.d.getElementsByName(checkboxName)].forEach((itemCheckbox) => {
+			let isEquals = (dataSet.filter((s) => { return s.name === itemCheckbox.value }).length > 0);
+			itemCheckbox.checked = isEquals;
+		});
+	}
+
+	_validate() {
+		let errMsg = '';
+
+		if (this.fields.form.name.value === '') {
+			errMsg += 'The field name is required.\n';
+		}
+
+		if (this.fields.form.address.value === '') {
+			errMsg += 'The field address is required.\n';
+		}
+
+		let element = this.fields.form['bread-list'];
+		if (element.options[element.selectedIndex].value === '') {
+			errMsg += 'The field type of bread is required.\n';
+		}
+
+		return errMsg;
+	}
+
+	_resetForm() {
+		this.fields.form.name.value = '';
+		this.fields.form.address.value = '';
+		this.fields.form['snack-list'].value = '';
+		this.fields.form['bread-list'].value = '';
+		this.fields.form['cheese-list'].value = '';
+		this.fields.form['filling-list'].value = '';
+
+		[...this.d.getElementsByName('salad')].forEach((itemCheckbox) => {
+			itemCheckbox.checked = false;
+		});
+
+		[...this.d.getElementsByName('sauce')].forEach((itemCheckbox) => {
+			itemCheckbox.checked = false;
+		});
+
+		[...this.d.getElementsByName('seasoning')].forEach((itemCheckbox) => {
+			itemCheckbox.checked = false;
+		});
+	}
+}
+
+/**
+ * The class is a facilitator to manipulate the elements of the Order form.
+ */
+export class OrderFormHelper {
+	constructor(d) {
+		this.fields = {
+			form: {
+				'name': d.getElementById('name'),
+				'value': d.getElementById('value'),
+				'value-order': d.getElementById('value-order'),
+				'amount-people': d.getElementById('amount-people'),
+				'value-person': d.getElementById('value-person'),
+				'percent-person' : d.getElementById('percent-person')
+			}
+		}
+
+		this.d = d;
+		this.orderValue = parseFloat(localStorage.getItem('orderValue'));
+		this.clientName = localStorage.getItem('clientName');
+
+		this._setClientInformations();
+		this._setValueOfTheOrder();
+		this.addSplitAccountListener();
+	}
+
+	_setClientInformations() {
+		this.fields.form['name'].innerHTML = this.clientName;
+	}
+
+	_setValueOfTheOrder() {
+		this.fields.form['value'].innerHTML = this.orderValue;
+		this.fields.form['value-order'].value = this.orderValue;
+	}
+
+	addSplitAccountListener() {
+		this.fields.form['amount-people'].addEventListener('blur', this._calculatePricePerPerson.bind(this));
+	}
+
+	_calculatePricePerPerson() {
+		let amountPeople = parseInt(this.fields.form['amount-people'].value);
+
+		let valuePerPerson = this.orderValue / amountPeople;
+
+		this.fields.form['value-person'].value = valuePerPerson;
+
+		this.fields.form['percent-person'].value = (valuePerPerson / this.orderValue) * 100;
+	}
+
 }

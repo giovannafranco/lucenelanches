@@ -3,16 +3,19 @@
 }
 
 body {
-  margin: 0; padding: 0;
-  background-color: #ecf0f1;
+  margin: 0 auto; 
+  padding: 0;
+  font-family: Arial;
 }
 
 .container {
   display:flex;
   flex-direction: row;
+  margin: 0; padding: 0;
+  background-color: #fff;
 }
 
-.container > div {
+.sections {
   width: 50%;
   height: 100px;
   margin: 20px;
@@ -51,13 +54,25 @@ body {
   display: inline-block;
 }
 
-button {
-  width: 100%;
-	margin: 8px 0;
+.actions-button{
+  width: 40%;
+	margin: 8px 1px;
   padding: 10px 0;
-  border: 2px solid;
+  border: 2px solid #D50000;
   border-radius: 8px;
-  background-color: #4CAF50;
-  color: white;
+  background-color: #D50000;
+  color: #FF0;
+  font-size: 16px;
   cursor: pointer;
+  float: right;
+}
+
+.banner{
+  height: 90px;
+  margin: 0 auto;
+  padding: 25px 0;
+  background-color: #D50000;
+  text-align: center;
+  font-style: italic;
+  color: #FFFF00;
 }

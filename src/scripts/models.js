@@ -1,11 +1,16 @@
 export class Snack {
 	constructor(name, ingredients) {
 		this.name = name;
-		this.ingredients = ingredients;
+		this.ingredients = ingredients.map((i) => {
+			if (i instanceof Ingredient) {
+				return i;
+			}
+			return new Ingredient(i.categoria, i.nome, i.valor);
+		});
 		this.value = () => {
 			let total = 0;
-			for (let key in ingredients) {
-				total += ingredients[key].valor;
+			for (let key in this.ingredients) {
+				total += this.ingredients[key].value;
 			}
 			return total;
 		};
@@ -27,7 +32,7 @@ export class Snack {
 }
 
 export class Ingredient{
-	constructor(category,name, value){
+	constructor(category, name, value){
 		this.category = category;
 		this.name = name;
 		this.value = value;
